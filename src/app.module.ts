@@ -2,18 +2,31 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeORMConfig } from 'config/typeorm.config';
+import { OrmConfigProvider } from 'config/typeorm.config';
 import { ContentController } from './content/content.controller';
 import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.dev.env'],
+    // ConfigModule.forRoot({
+    //   envFilePath: ['.dev.env'],
+    // }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASS'),
+        database: configService.get('DB_DATABASE'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+      }),
     }),
-    TypeOrmModule.forRoot(typeORMConfig),
     UsersModule,
     ContentModule
   ],
