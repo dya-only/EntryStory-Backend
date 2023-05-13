@@ -10,9 +10,6 @@ import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
-    // ConfigModule.forRoot({
-    //   envFilePath: ['.dev.env'],
-    // }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -21,7 +18,7 @@ import { ContentModule } from './content/content.module';
         host: configService.get('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get('DB_USER'),
-        password: configService.get('DB_PASS'),
+        password: configService.get<string>('DB_PASS'),
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
