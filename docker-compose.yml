@@ -1,0 +1,25 @@
+services:
+  backend:
+    image: node:18-alpine
+    command: sh -c "npm i -g pnpm && pnpm i && pnpm start:dev"
+    ports:
+      - 3000:3000
+    working_dir: /backend
+    volumes:
+      - ./:/backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: entry
+  postgres:
+    image: postgres:latest
+    volumes:
+      - entry-db:/var/lib/postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: entry
+
+volumes:
+  entry-db:
