@@ -1,10 +1,9 @@
-# syntax=docker/dockerfile:1
-   
-FROM node:18-alpine
+FROM node:latest
 RUN npm i -g pnpm
-WORKDIR /src
+RUN npm i -g @nestjs/cli
+WORKDIR /backend
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm i --prod
+RUN pnpm i
 COPY . .
-CMD ["node", "dist/src/main.js"]
+CMD ["pnpm", "start:dev"]
 EXPOSE 3000
